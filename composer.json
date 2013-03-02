@@ -1,0 +1,15 @@
+{
+    "name": "splot/weblog-module",
+    "description": "WebLog module for Splot Framework.",
+    "keywords": ["php", "tools", "utils", "log", "debug"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Michalł Dudek",
+            "email": "michal@michaldudek.pl"
+        }
+    ],
+    "autoload": {
+    	"psr-0": { "Splot\\WebLogModule": "src/" }
+    }
+}
