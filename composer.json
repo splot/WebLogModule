@@ -12,6 +12,7 @@
      "require": {
         "php": ">=5.3.3",
         "splot/foundation": "dev-master",
+        "splot/log": "dev-master",
         "splot/framework": "dev-master"
     },
     "autoload": {
