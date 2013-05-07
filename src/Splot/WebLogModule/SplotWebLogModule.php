@@ -1,6 +1,8 @@
 <?php
 namespace Splot\WebLogModule;
 
+use MD\Foundation\Debug\Debugger;
+
 use Splot\Log\LogContainer;
 use Splot\Log\ExportableLogInterface;
 
@@ -13,17 +15,19 @@ class SplotWebLogModule extends AbstractModule
     public function boot() {
         if (LogContainer::isEnabled()) {
             $this->container->get('event_manager')->subscribe(WillSendResponse::getName(), function(WillSendResponse $event) {
-                $logs = array();
+                $logsContent = \MD\console_string_dump('######################### SPLOT LOG #########################');
                 foreach(LogContainer::getLogs() as $name => $log) {
                     if (!$log instanceof ExportableLogInterface) {
                         continue;
                     }
 
-                    $logs[$name] = $log->getLog();
+                    $logsContent .= \MD\console_string_dump('####### '. $name);
+                    foreach($log->getLog() as $item) {
+                        $logsContent .= \MD\console_string_dump($item);
+                    }
                 }
 
-                $logsContent = dump($logs, true);
-                $event->getResponse()->alterPart('</body>', '<br /><br /><br /><br /><br /><hr /><br /><br />'. $logsContent .'</body>');
+                $event->getResponse()->alterPart('</body>', '<script type="text/javascript">'. $logsContent .'</script>'. NL .'</body>');
             }, -99999);
         }
     }
