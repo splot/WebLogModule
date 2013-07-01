@@ -31,7 +31,7 @@ class SplotWebLogModule extends AbstractModule
                         // try to get benchmark data as well
                         if ($name === 'Application' && in_array('profiling', $item['_tags'])) {
                             $benchmark = array(
-                                'Execution Time' => $item['context']['time'],
+                                'Execution Time' => round($item['context']['time'] * 1000) .' ms',
                                 'Memory Used' => StringUtils::bytesToString($item['context']['memory'])
                             );
                         }
