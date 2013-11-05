@@ -15,7 +15,9 @@ class SplotWebLogModule extends AbstractModule
 
     public function boot() {
         if (LogContainer::isEnabled()) {
-            $this->container->get('event_manager')->subscribe(WillSendResponse::getName(), function(WillSendResponse $event) {
+            $container = $this->container;
+
+            $container->get('event_manager')->subscribe(WillSendResponse::getName(), function(WillSendResponse $event) use ($container) {
                 $benchmark = array();
 
                 $logsContent = Debugger::consoleStringDump('######################### SPLOT LOG #########################');
@@ -27,21 +29,15 @@ class SplotWebLogModule extends AbstractModule
                     $logsContent .= Debugger::consoleStringDump('####### '. $name);
                     foreach($log->getLog() as $item) {
                         $logsContent .= Debugger::consoleStringDump($item);
-
-                        // try to get benchmark data as well
-                        if ($name === 'Application' && in_array('profiling', $item['_tags'])) {
-                            $benchmark = array(
-                                'Execution Time' => round($item['context']['time'] * 1000) .' ms',
-                                'Memory Used' => StringUtils::bytesToString($item['context']['memory'])
-                            );
-                        }
                     }
                 }
 
                 // log benchmark data
-                if (!empty($benchmark)) {
-                    $logsContent .= Debugger::consoleStringDump('####### Benchmark', $benchmark);
-                }
+                $timer = $container->get('application')->getTimer();
+                $logsContent .= Debugger::consoleStringDump('####### Benchmark', array(
+                    'Execution Time' => round($timer->stop() * 1000) . ' ms',
+                    'Memory Used' => StringUtils::bytesToString($timer->getStopMemoryPeak())
+                ));
 
                 $event->getResponse()->alterPart('</body>', '<script type="text/javascript">'. $logsContent .'</script>'. NL .'</body>');
             }, -99999);
