@@ -20,7 +20,7 @@ class SplotWebLogModule extends AbstractModule
             $timer = $container->get('application')->getTimer();
             $executionTime = round($timer->stop() * 1000);
             $memoryUsed = $timer->getStopMemoryPeak();
-            $container->get('logger_provider')->provide('Benchmark')->debug('Execution took {time} ms and used {memory} of memory', array(
+            $container->get('logger_provider')->provide('Benchmark')->info('Execution took {time} ms and used {memory} of memory', array(
                 'time' => $executionTime,
                 'memoryUsed' => $memoryUsed,
                 'memory' => StringUtils::bytesToString($memoryUsed)
