@@ -13,13 +13,14 @@ class SplotWebLogModule extends AbstractModule
 
     public function boot() {
         $container = $this->container;
+        $self = $this;
 
-        $container->get('event_manager')->subscribe(WillSendResponse::getName(), function(WillSendResponse $event) use ($container) {
+        $container->get('event_manager')->subscribe(WillSendResponse::getName(), function(WillSendResponse $event) use ($container, $self) {
             $benchmark = array();
 
             $logsContent = Debugger::consoleStringDump('######################### SPLOT LOG #########################');
             $messages = $container->get('clog.writer.memory')->getMessages();
-            $messages = ArrayUtils::groupBy($messages, '_name');
+            $messages = $self->groupMessages($messages);
 
             foreach($messages as $name => $msgs) {
                 $logsContent .= Debugger::consoleStringDump('####### '. $name);
@@ -37,6 +38,23 @@ class SplotWebLogModule extends AbstractModule
 
             $event->getResponse()->alterPart('</body>', '<script type="text/javascript">'. $logsContent .'</script>'. NL .'</body>');
         }, -99999);
+    }
+
+    public function groupMessages(array $messages) {
+        $grouped = array();
+
+        foreach($messages as $message) {
+            $name = isset($message['context']) && isset($message['context']['_name'])
+                ? $message['context']['_name']
+                : 'general';
+            if (!isset($grouped[$name])) {
+                $grouped[$name] = array();
+            }
+
+            $grouped[$name][] = $message;
+        }
+
+        return $grouped;
     }
 
 }
