@@ -12,7 +12,7 @@
      "require": {
         "php": ">=5.3.3",
         "michaldudek/foundation": "dev-master",
-        "splot/log": "dev-master",
+        "michaldudek/clog": "dev-master",
         "splot/framework": "dev-master"
     },
     "autoload": {
