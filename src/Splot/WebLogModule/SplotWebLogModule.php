@@ -16,7 +16,15 @@ class SplotWebLogModule extends AbstractModule
         $self = $this;
 
         $container->get('event_manager')->subscribe(WillSendResponse::getName(), function(WillSendResponse $event) use ($container, $self) {
-            $benchmark = array();
+            // log benchmark data
+            $timer = $container->get('application')->getTimer();
+            $executionTime = round($timer->stop() * 1000);
+            $memoryUsed = $timer->getStopMemoryPeak();
+            $container->get('logger_provider')->provide('Benchmark')->debug('Execution took {time} ms and used {memory} of memory', array(
+                'time' => $executionTime,
+                'memoryUsed' => $memoryUsed,
+                'memory' => StringUtils::bytesToString($memoryUsed)
+            ));
 
             $logsContent = Debugger::consoleStringDump('######################### SPLOT LOG #########################');
             $messages = $container->get('clog.writer.memory')->getMessages();
@@ -28,13 +36,6 @@ class SplotWebLogModule extends AbstractModule
                     $logsContent .= Debugger::consoleStringDump($item);
                 }
             }
-
-            // log benchmark data
-            $timer = $container->get('application')->getTimer();
-            $logsContent .= Debugger::consoleStringDump('####### Benchmark', array(
-                'Execution Time' => round($timer->stop() * 1000) . ' ms',
-                'Memory Used' => StringUtils::bytesToString($timer->getStopMemoryPeak())
-            ));
 
             $event->getResponse()->alterPart('</body>', '<script type="text/javascript">'. $logsContent .'</script>'. NL .'</body>');
         }, -99999);
