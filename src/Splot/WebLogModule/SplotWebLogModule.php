@@ -16,11 +16,15 @@ class SplotWebLogModule extends AbstractModule
         $self = $this;
 
         $container->get('event_manager')->subscribe(WillSendResponse::getName(), function(WillSendResponse $event) use ($container, $self) {
+            $request = $event->getRequest();
+
             // log benchmark data
             $timer = $container->get('application')->getTimer();
             $executionTime = round($timer->stop() * 1000);
             $memoryUsed = $timer->getStopMemoryPeak();
-            $container->get('logger_provider')->provide('Benchmark')->info('Execution took {time} ms and used {memory} of memory', array(
+            $container->get('logger_provider')->provide('Benchmark')->info('Execution of {method} request for {uri} took {time} ms and used {memory} of memory', array(
+                'method' => $request->getMethod(),
+                'uri' => $request->getRequestUri(),
                 'time' => $executionTime,
                 'memoryUsed' => $memoryUsed,
                 'memory' => StringUtils::bytesToString($memoryUsed)
