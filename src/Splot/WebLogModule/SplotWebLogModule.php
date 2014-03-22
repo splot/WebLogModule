@@ -11,7 +11,7 @@ use Splot\Framework\Events\WillSendResponse;
 class SplotWebLogModule extends AbstractModule
 {
 
-    public function boot() {
+    public function configure() {
         $container = $this->container;
         $self = $this;
 
