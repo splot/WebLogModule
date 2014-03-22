@@ -13,8 +13,14 @@
         "php": ">=5.3.3",
         "michaldudek/foundation": "dev-master",
         "michaldudek/clog": "dev-master",
-        "splot/framework": "dev-master"
+        "splot/framework": ">=0.6"
     },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.6.x-dev"
+        }
+    },
+    "minimum-stability": "dev",
     "autoload": {
     	"psr-0": { "Splot\\WebLogModule": "src/" }
     }
