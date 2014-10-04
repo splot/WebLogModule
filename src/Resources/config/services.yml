@@ -1,0 +1,12 @@
+services:
+
+    splot.logger.benchmark: ["@logger_provider", "provide", ["Benchmark"]]
+
+    splot.weblog_injector:
+        class: Splot\WebLogModule\LogInjector
+        arguments:
+            - @splot.timer
+            - @splot.logger.benchmark
+            - @clog.writer.memory
+        notify:
+            - ["event_manager", "subscribeService", ["Splot\Framework\Events\WillSendResponse", "splot.weblog_injector", "injectLog", -99999]]
