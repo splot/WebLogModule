@@ -7,7 +7,6 @@ use MD\Clog\Writers\MemoryLogger;
 
 use MD\Foundation\Debug\Debugger;
 use MD\Foundation\Debug\Timer;
-use MD\Foundation\Utils\ArrayUtils;
 use MD\Foundation\Utils\StringUtils;
 
 use Splot\Framework\Events\WillSendResponse;
