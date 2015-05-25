@@ -1,17 +1,19 @@
 <?php
 namespace Splot\WebLogModule\Tests;
 
+use Splot\Framework\Testing\ApplicationTestCase;
+
 use Splot\WebLogModule\SplotWebLogModule;
 
-class IntegrationTest extends \Splot\Framework\Testing\ApplicationTestCase
+class IntegrationTest extends ApplicationTestCase
 {
 
-    public static $_applicationClass = "Splot\Framework\Testing\Stubs\TestApplication";
+    public static $applicationClass = "Splot\Framework\Testing\Stubs\TestApplication";
 
     public function testServicesAreRegistered() {
-        $this->_application->addTestModule(new SplotWebLogModule());
+        $this->application->addTestModule(new SplotWebLogModule());
 
-        $container = $this->_application->getContainer();
+        $container = $this->application->getContainer();
 
         $this->assertTrue($container->has('splot.weblog_injector'));
 
@@ -20,14 +22,14 @@ class IntegrationTest extends \Splot\Framework\Testing\ApplicationTestCase
     }
 
     public function testListenerIsExecuted() {
-        $this->_application->addTestModule(new SplotWebLogModule());
+        $this->application->addTestModule(new SplotWebLogModule());
 
         $request = $this->getMock('Splot\Framework\HTTP\Request');
         $response = $this->getMock('Splot\Framework\HTTP\Response');
         $response->expects($this->atLeastOnce())
             ->method('alterPart');
             
-        $this->_application->sendResponse($response, $request);
+        $this->application->sendResponse($response, $request);
     }
 
 }

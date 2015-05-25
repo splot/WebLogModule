@@ -9,4 +9,4 @@ services:
             - @splot.logger.benchmark
             - @clog.writer.memory
         notify:
-            - ["event_manager", "subscribeService", ["Splot\Framework\Events\WillSendResponse", "splot.weblog_injector", "injectLog", -99999]]
+            - ["event_manager", "subscribeService", ["%event.response%", "@=", "injectLog", -99999]]
