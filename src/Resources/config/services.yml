@@ -2,11 +2,16 @@ services:
 
     splot.logger.benchmark: ["@logger_provider", "provide", ["Benchmark"]]
 
+    splot.weblog_memory:
+        class: MD\Clog\Writers\MemoryLogger
+        notify:
+            - ["@clog", "addWriter", ["@"]]
+
     splot.weblog_injector:
         class: Splot\WebLogModule\LogInjector
         arguments:
             - @splot.timer
             - @splot.logger.benchmark
-            - @clog.writer.memory
+            - @splot.weblog_memory
         notify:
             - ["event_manager", "subscribeService", ["%event.response%", "@=", "injectLog", -99999]]
